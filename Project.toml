@@ -1,0 +1,7 @@
+name = "Epidemic"
+uuid = "e21eeade-21c4-4f25-9bb3-814723ce0564"
+authors = ["rmzd200 <rouayda2015@outlook.com>"]
+version = "0.0.1"
+
+[compat]
+julia = "1.10"
