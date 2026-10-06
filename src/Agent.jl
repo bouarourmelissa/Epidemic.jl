@@ -14,6 +14,7 @@ using DataFrames
     immunity_timer::Int  = 0
     age::Int             = 0
     wearing_mask::Bool   = false 
+    vaccinated::Bool    = false
 end
 
 # ----------------------------------------------------
@@ -29,6 +30,8 @@ struct ModelParams
     max_age::Int              # Max lifetime in ticks (e.g., 200)
     mask_effectiveness::Float64 # Mask efficacity
     mask_probability::Float64 # Probabilty that a person wear a mask
+    vaccine_effectiveness::Float64 # efficacity of the vaccine
+    vaccination_probability::Float64
 end
 
 function initialize_model(;
@@ -43,8 +46,10 @@ function initialize_model(;
     carrying_capacity = 300,
     max_age = 110,
     seed = 42 ,
-    mask_probability=0.5 ,
-    mask_effectiveness=0.5
+    mask_probability= 0.5 ,
+    mask_effectiveness= 0.5,
+    vaccine_effectiveness= 0.7 , 
+    vaccination_probability= 0.6
 )
     # NetLogo uses a periodic toroidal grid where multiple agents can share a patch
     space = GridSpace(dims; periodic = true)
@@ -58,7 +63,9 @@ function initialize_model(;
         carrying_capacity,
         max_age,
         mask_effectiveness,
-        mask_probability
+        mask_probability ,
+        vaccine_effectiveness ,
+        vaccination_probability
     )
     
     rng = Xoshiro(seed) # Generate randomly
@@ -69,7 +76,8 @@ function initialize_model(;
         status = (i <= initial_infected) ? infected : susceptible
         rand_age = rand(rng, 1:max_age)
         wears_mask=rand(rng)<mask_probability
-        add_agent_single!(model; status = status, age = rand_age,wearing_mask=wears_mask)
+        is_vaccinated=rand(rng)< vaccination_probability
+        add_agent_single!(model; status = status, age = rand_age,wearing_mask=wears_mask,vaccinated=is_vaccinated)
     end
 
     return model
@@ -112,7 +120,7 @@ function agent_step!(agent::Person, model)
         end
     end
 
-    # D. Transmission: An infected agent infects susceptible co-located neighbors
+    # D. Transmission: An infected agent infects susceptible co-located neighbors /case of Wearing Mask 
     if agent.status == infected
         # Find all agents occupying the same patch / grid cell
         for neighbor in agents_in_position(agent, model)
@@ -124,10 +132,18 @@ function agent_step!(agent::Person, model)
                     transmission_probability*=(1-params.mask_effectiveness)
                 end
                 
-                # If the susceptible person wear also a mask
-                if neighbor.wearing_mask
+                
+                if neighbor.wearing_mask # If the susceptible person wear also a mask
                     transmission_probability*=(1-params.mask_effectiveness)
                 end
+
+
+                if neighbor.vaccinated  # If the susceptible  is vaccinated 
+                    transmission_probability *=(1- params.vaccine_effectiveness)
+                end    
+
+    
+
                 if rand(abmrng(model)) < transmission_probability   
                     neighbor.status = infected
                     neighbor.infection_timer = 0
@@ -141,7 +157,7 @@ function agent_step!(agent::Person, model)
     if nagents(model) < params.carrying_capacity
         if rand(abmrng(model)) < params.birth_rate
             # Newborn placed at the parent's position
-            add_agent!(agent.pos, model; status = susceptible, age = 0,wearing_mask=false)
+            add_agent!(agent.pos, model; status = susceptible, age = 0,wearing_mask=false,vaccinated=false)
         end
     end
 end
