@@ -54,7 +54,7 @@ function initialize_model(;
         max_age
     )
     
-    rng = Xoshiro(seed) # Generer aleatoirement 
+    rng = Xoshiro(seed) # Generate randomly
     model = StandardABM(Person, space; agent_step!, properties, rng)
 
     # Populate agents randomly
