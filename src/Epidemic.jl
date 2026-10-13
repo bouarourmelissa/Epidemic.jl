@@ -1,5 +1,7 @@
 module Epidemic
-
-# Write your package code here.
-
+using Agents
+using Random
+#using CairoMakie
+#using DataFrames
+include("agent.jl")
 end

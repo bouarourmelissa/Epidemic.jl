@@ -1,7 +1,5 @@
-using Agents
-using Random
-using CairoMakie
-using DataFrames
+using Epidemic
+
 
 # ----------------------------------------------------
 # 1. Agent Definition
@@ -87,7 +85,7 @@ end
 # 3. Agent Dynamics (Step Function)
 # ----------------------------------------------------
 function agent_step!(agent::Person, model)
-    params = model.properties
+    params = abmproperties(model)
 
     # A. Aging and Natural Death
     agent.age += 1
@@ -97,7 +95,7 @@ function agent_step!(agent::Person, model)
     end
 
     # B. Movement (Random walk to neighboring cells, including diagonals)
-    walk!(agent, rand, model)
+    randomwalk!(agent, model)
 
     # C. Virus Progression & Recovery
     if agent.status == infected

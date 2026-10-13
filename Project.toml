@@ -1,7 +1,13 @@
 name = "Epidemic"
 uuid = "e21eeade-21c4-4f25-9bb3-814723ce0564"
-authors = ["rmzd200 <rouayda2015@outlook.com>"]
 version = "0.0.1"
+authors = ["rmzd200 <rouayda2015@outlook.com>"]
+
+[deps]
+Agents = "46ada45e-f475-11e8-01d0-f70cc89e6671"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
+Agents = "7.1.0"
+Random = "1.11.0"
 julia = "1.10"
