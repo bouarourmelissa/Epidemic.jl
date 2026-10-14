@@ -5,17 +5,11 @@ authors = ["rmzd200 <rouayda2015@outlook.com>"]
 
 [deps]
 Agents = "46ada45e-f475-11e8-01d0-f70cc89e6671"
-<<<<<<< HEAD
-=======
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
->>>>>>> 3985c7dd32de6d2a6d128fec98a8b0b5bf9c38dd
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
 Agents = "7.1.0"
-<<<<<<< HEAD
-=======
 CairoMakie = "0.15.16"
->>>>>>> 3985c7dd32de6d2a6d128fec98a8b0b5bf9c38dd
 Random = "1.11.0"
 julia = "1.10"
