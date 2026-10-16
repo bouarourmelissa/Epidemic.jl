@@ -15,7 +15,7 @@ using Epidemic
 using Agents
 using CairoMakie
 
-const DIMS = (35, 35)
+const DIMS = (10, 10)
 const OUT  = joinpath(@__DIR__, "figures")
 mkpath(OUT)
 
@@ -52,6 +52,7 @@ end
 
 agent_colors(model) = [STATUS_COLORS[a.status] for a in allagents(model)]
 
+# `title` peut être un String ou un Observable{String}
 function grid_axis(pos; title = "")
     ax = Axis(pos; title, aspect = DataAspect())
     limits!(ax, 0.5, DIMS[1] + 0.5, 0.5, DIMS[2] + 0.5)
@@ -153,6 +154,8 @@ end
 
 # =====================================================================
 # 4. Animation de la grille (mp4)
+#    CORRECTION : l'Observable `title` est passé directement à l'Axis
+#    à la création (au lieu de `ax.title = title`, interdit par Makie).
 # =====================================================================
 function make_animation(; n_frames = 200, framerate = 15)
     model = initialize_model(dims = DIMS)
@@ -162,8 +165,7 @@ function make_animation(; n_frames = 200, framerate = 15)
     title = Observable("t = 0")
 
     fig = Figure(size = (750, 820))
-    ax = grid_axis(fig[1, 1]; title = "")
-    ax.title = title
+    ax = grid_axis(fig[1, 1]; title = title)
     scatter!(ax, pts; color = cols, markersize = 11)
     status_legend!(fig[2, 1])
 
@@ -184,4 +186,4 @@ plot_snapshots()
 plot_scenarios()
 make_animation()
 
-println("Terminé. Les figures sont dans : ", OUT)
+println("Terminé. Les figures sont dans : ", OUT) 
