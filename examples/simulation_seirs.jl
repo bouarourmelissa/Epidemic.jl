@@ -1,39 +1,99 @@
-using Epidemic 
+
+using Epidemic
 using Agents
 
-# Create the model
-model = initialize_model()
 
-# Count the total number of agents
-println("Total population: ", nagents(model))
+# 1. Simulation settings
+const N_TICKS = 50
+const SEED = 42
 
-# Count agents by health status
-S = count(a -> a.status == susceptible, allagents(model))
-E=count(a-> a.status==exposed,allagents(model) )
-I = count(a -> a.status == infected, allagents(model))
-R = count(a -> a.status == recovered, allagents(model))
+# 2. Count agents by health status
+function count_health_status(model)
+    S = 0
+    E = 0
+    I = 0
+    R = 0
 
-println("Susceptible: ", S)
-println("Exposed: ",E)
-println("Infected: ", I)
-println("Recovered: ", R)
+    for agent in allagents(model)
+        if agent.status == Epidemic.susceptible
+            S += 1
+        elseif agent.status == Epidemic.exposed
+            E += 1
+        elseif agent.status == Epidemic.infected
+            I += 1
+        elseif agent.status == Epidemic.recovered
+            R += 1
+        else
+            error(
+                "Unknown status for agent $(agent.id): $(agent.status)")
+        end
+    end
 
-# Check if the population count is correct
-println("Population check: ", S + I + E + R == nagents(model))
+    N = nagents(model)
 
-# Run the simulation for 50 ticks
-for t in 1:50
-  # Move the simulation forward by one tick
-    step!(model, 1)    
-  # Count agents by health status
-    local S = count(a -> a.status == susceptible, allagents(model))
-    local E=count(a->a.status==exposed,allagents(model))
-   local I = count(a -> a.status == infected, allagents(model))
-   local R = count(a -> a.status == recovered, allagents(model))  
- #Total Agents
-   N=nagents(model)
- #check population consistency
- @assert S+I+R+E == N
- # Display the results
-    println("Tick: ", t," | S: ", S," | E: ", E," | I: ", I," | R: ", R," | Total: ", N)
-end  
+    # Every agent must belong to exactly one health state
+    @assert S + E + I + R == N "Population count mismatch"
+
+    return (S = S, E = E, I = I, R = R, N = N)
+end
+
+# 3. Run a SEIRS simulation
+
+function run_simulation!(model, n_ticks::Int)
+    n_ticks >= 0 || throw(ArgumentError("n_ticks must be positive"))
+    strategy = abmproperties(model).strategy
+    @show strategy
+  
+
+    initial = count_health_status(model)
+    peak_infected = initial.I
+    peak_tick = 0
+    final = initial
+
+    for tick in 0:n_ticks
+        # Collect population statistics
+        counts = count_health_status(model)
+
+        # Display the current state
+        if tick %5==0 || tick==n_ticks
+        @show tick counts
+        end
+        # Track the maximum number of infected agents
+        if counts.I > peak_infected
+            peak_infected = counts.I
+            peak_tick = tick
+        end
+
+        final = counts
+
+        # Advance one tick, except after the final observation
+        if tick < n_ticks
+            step!(model, 1)
+        end
+    end
+
+    # Simulation summary
+    return (strategy=strategy ,final = final, peak_infected = peak_infected,peak_tick = peak_tick )
+end
+
+
+# 4. Initialize models
+
+model_basic = initialize_model(
+    seed = SEED,
+    strategy = Epidemic.BasicTransmission
+)
+
+model_protected = initialize_model(
+    seed = SEED,
+    strategy = Epidemic.ProtectedTransmission
+)
+
+
+# 5. Run both simulations
+basic_results = run_simulation!(model_basic, N_TICKS)
+protected_results = run_simulation!(model_protected, N_TICKS)
+
+# 6. Compare simulation results
+@show basic_results
+@show protected_results

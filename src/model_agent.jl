@@ -12,23 +12,31 @@
     wearing_mask::Bool   = false 
     vaccinated::Bool    = false
 end
-# ----------------------------------------------------
-# 2. Model Initialization
-# ----------------------------------------------------
+
+#2. Transmission strategies
+ abstract type TransmissionStrategy end
+ struct BasicTransmission <:TransmissionStrategy end
+ struct ProtectedTransmission <:TransmissionStrategy  end
+
+
+# 3. Model Initialization
 struct ModelParams
-    infectiousness::Float64   # Probability of infection on contact (e.g., 0.65)
+    infectiousness::Float64   # Probability of infection on contact 
     latency_period::Int       # Duration of exposure before infection
-    duration::Int             # Duration of infection in ticks (e.g., 20)
-    chance_recover::Float64   # Probability of recovery vs death (e.g., 0.50)
-    immunity_duration::Int    # Ticks immune after recovery (e.g., 50)
-    birth_rate::Float64       # Probability of reproduction per tick (e.g., 0.01)
-    carrying_capacity::Int    # Max population cap (e.g., 300)
-    max_age::Int              # Max lifetime in ticks (e.g., 200)
+    duration::Int             # Duration of infection in ticks 
+    chance_recover::Float64   # Probability of recovery vs death 
+    immunity_duration::Int    # Ticks immune after recovery 
+    birth_rate::Float64       # Probability of reproduction per tick 
+    carrying_capacity::Int    # Max population cap 
+    max_age::Int              # Max lifetime in ticks 
     mask_effectiveness::Float64 # Mask efficacity
     mask_probability::Float64 # Probabilty that a person wear a mask
     vaccine_effectiveness::Float64 # efficacity of the vaccine
     vaccination_probability::Float64
+    strategy::Type{<:TransmissionStrategy}
 end
+
+
 
 function initialize_model(;
     dims = (10, 10),
@@ -46,8 +54,11 @@ function initialize_model(;
     mask_probability= 0.5 ,
     mask_effectiveness= 0.5,
     vaccine_effectiveness= 0.7 , 
-    vaccination_probability= 0.6
+    vaccination_probability= 0.6,
+    strategy::Type{<:TransmissionStrategy}=ProtectedTransmission
 )   
+
+  
     # validate model parameters
     @assert 0 <= initial_infected <= n_agents <= carrying_capacity
     @assert latency_period>0
@@ -77,7 +88,8 @@ function initialize_model(;
         mask_effectiveness,
         mask_probability ,
         vaccine_effectiveness ,
-        vaccination_probability
+        vaccination_probability,
+        strategy
     )
     
     rng = Xoshiro(seed) # Create a reproducible random number generator
@@ -153,6 +165,37 @@ function update_health!(agent::Person, model)
 
     return false
 end
+
+# Same function for different type of infection 
+function transmission_probability( 
+    source::Person, # the infected agent
+    target::Person, # The 
+    params::ModelParams,
+    ::Type{BasicTransmission}
+)  
+  return params.infectiousness
+end
+function transmission_probability( 
+    source::Person,
+    target::Person,
+    params::ModelParams,
+    ::Type{ProtectedTransmission}
+    )
+    infection_probability=params.infectiousness
+    
+    if source.wearing_mask
+        infection_probability*=(1-params.mask_effectiveness)
+    end
+    if target.wearing_mask
+        infection_probability*=(1-params.mask_effectiveness)
+    end    
+    if target.vaccinated
+        infection_probability*=(1-params.vaccine_effectiveness)
+    end    
+    return infection_probability
+end  
+
+
 #function D: transmission of the virus 
 function transmit_infection!(agent::Person , model)
     params = abmproperties(model) 
@@ -160,35 +203,17 @@ function transmit_infection!(agent::Person , model)
         # Find all agents occupying the same patch / grid cell
         for neighbor in agents_in_position(agent, model)
             if neighbor.status == susceptible 
-                # Normal probabilty of transmission : 
-                transmission_probability=params.infectiousness
-
-                if agent.wearing_mask
-                    transmission_probability*=(1-params.mask_effectiveness)
-                end
-                
-                
-                if neighbor.wearing_mask # If the susceptible person wear also a mask
-                    transmission_probability*=(1-params.mask_effectiveness)
-                end
-
-
-                if neighbor.vaccinated  # If the susceptible  is vaccinated 
-                    transmission_probability *=(1- params.vaccine_effectiveness)
+                infection_probability=transmission_probability(agent,neighbor, params,params.strategy)
+                if rand(abmrng(model))<infection_probability
+                    neighbor.status=exposed
+                    neighbor.exposure_timer=0
                 end    
-
-    
-
-                if rand(abmrng(model)) < transmission_probability   
-                    neighbor.status = exposed
-                    neighbor.exposure_timer = 0
-                
-                end
             end
         end
     end 
-    
+    return nothing
 end    
+
 # function E: Reproduction
 function reproduce!(agent::Person,model) 
      params = abmproperties(model) 
@@ -201,7 +226,8 @@ function reproduce!(agent::Person,model)
             add_agent!(agent.pos, model; status = susceptible, age = 0,wearing_mask=wears_mask,vaccinated=is_vaccinated)
 
         end
-    end 
+    end
+  return nothing 
 end    
 # ----------------------------------------------------
 # 3. Agent Dynamics (Step Function)
@@ -226,3 +252,4 @@ function agent_step!(agent::Person, model)
     # E. Reproduction (Demographic Birth)
     reproduce!(agent,model)
 end
+
