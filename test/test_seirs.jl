@@ -7,12 +7,12 @@ using Agents
 
     @testset "Model Initialization " begin
         model=initialize_model()
-        @test nagents(model)==150
+        @test nagents(model)==150 # verifie que le model contient exactemnet 150 individus 
         @test count(a -> a.status == susceptible, allagents(model))==140
         @test count(a -> a.status == infected, allagents(model))==10
         
         # Test invalide parameters
-        @test_throws AssertionError initialize_model(duration= -3)
+        @test_throws AssertionError initialize_model(duration= -3) # je refuse une duree negative 
         @test_throws AssertionError initialize_model( infectiousness=1.5)
         @test_throws AssertionError initialize_model( initial_infected=200)
 

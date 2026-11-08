@@ -9,5 +9,7 @@ include("model_agent.jl")
 export HealthStatus, susceptible, exposed, infected, recovered
 export Person, ModelParams
 export initialize_model, agent_step!
+export TransmissionStrategy
+export BasicTransmission, ProtectedTransmission
 
 end

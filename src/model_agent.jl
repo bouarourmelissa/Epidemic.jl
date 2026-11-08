@@ -252,4 +252,3 @@ function agent_step!(agent::Person, model)
     # E. Reproduction (Demographic Birth)
     reproduce!(agent,model)
 end
-

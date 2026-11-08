@@ -1,0 +1,71 @@
+
+/* ====================================================
+    L 'apparence de la page
+   ==================================================== */
+:root {
+  --fond:       #f5efff;   /* fond lavande clair */
+  --carte:      #ffffff;   /* cartes blanches */
+  --bord:       #e4d2f3;   /* bordures pastel */
+  --texte:      #352941;   /* texte violet foncé */
+  --gris:       #806b91;   /* petits textes */
+  --titre:      #bd55a8;   /* grand titre rose */
+  --soustitre:  #9865bc;   /* titres violets */
+  --valeur:     #36bcd8;   /* valeurs cyan */
+  --bouton:     #a45bd4;   /* boutons violets */
+  --piste:      #eee4f7;   /* fond des barres */
+  --evenement:  #d76ab5;   /* trait du journal */
+  --erreur:     #e85d75;   /* messages d'erreur */
+}
+
+/* ---------- Page ---------- */
+body  { background:var(--fond); color:var(--texte); font-family:Arial; padding:25px }
+.page { max-width:1450px; margin:auto }
+
+/* ---------- En-tête ---------- */
+.entete { display:flex; align-items:center; gap:20px; margin-bottom:25px }
+.logo   { font-size:45px }
+.titre  { color:var(--titre); font-size:42px; margin:0 }
+.sous, .nom { color:var(--gris); font-size:12px }
+
+/* ---------- Disposition ---------- */
+.corps  { display:flex; gap:20px; align-items:flex-start }
+.gauche { width:330px }
+.droite { flex:1 }
+.flex   { display:flex; gap:18px }
+.stats  { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:18px }
+
+/* ---------- Cartes ---------- */
+.carte, .stat { background:var(--carte); border:1px solid var(--bord); border-radius:15px; padding:15px; margin-bottom:18px }
+.stat         { margin:0; text-align:center; border-top-width:4px }
+.carte h3     { color:var(--soustitre); font-size:14px; margin-top:0 }
+.chiffre      { font-size:34px; font-weight:bold }
+.petit .chiffre { font-size:24px }
+
+/* ---------- Curseurs et boutons ---------- */
+.ligne { display:block; margin:12px 0 }
+.val   { float:right; color:var(--valeur); font-weight:bold }
+input[type=range] { width:100% }
+button { width:100%; padding:12px!important; margin:4px 0; background:var(--bouton)!important; color:white!important; border:0!important; border-radius:10px!important }
+
+/* ---------- Barres, journal, erreur ---------- */
+.piste  { height:10px; background:var(--piste); border-radius:5px } /* c est pour la barre de regression */
+.rempli { height:10px; border-radius:5px } /* c est pour la partie colorée de la barre*/
+.bl     { display:flex; justify-content:space-between } /* les blocs avec deux elements */
+.barre  { margin-bottom:12px }
+.ev     { margin:0 0 8px; border-left:3px solid var(--evenement); padding-left:8px } /* c est pour l evenement dans le journal */
+.erreur { color:var(--erreur) } 
+
+
+/*Petite annexe c est pour vous deux on la supprimeras aprés  */
+
+/* _padding : ajoute un espace interieurs en pixels 
+   _margin : auto , c ets centrer le contenu lorsque l espace > sa largeur 
+   _ display : flex , place les elements les uns les autres et display:block :l element occupe tpute la largeur disponible 
+   _gap : ajouts des espaces entres elements 
+   - margin =0 ; c est pour supprimer les marges autou du titre et margin_top : c est la marge superieure 
+   _ flex= 1 : lui permet de prendre tous l espace dispo restant 
+   _ grid_template_columns : crée 4 colonnes de la mm largeur 
+   _border-raduis : pour arrondir les coins 
+   - border-top-width: augemnter l'epaisseur de la bordure 
+   _ font-weight : pour  mettre le texte  en gras   et font-size : pour la taille du texte 
+ */
