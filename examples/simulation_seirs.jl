@@ -40,17 +40,17 @@ end
 # 3. Run a SEIRS simulation
 
 function run_simulation!(model, n_ticks::Int)
-    n_ticks >= 0 || throw(ArgumentError("n_ticks must be positive"))
+    n_ticks >= 0 || throw(ArgumentError("n_ticks must be positive")) #positifs ou nul sinon on declenche une erreur 
     strategy = abmproperties(model).strategy
     @show strategy
   
 
     initial = count_health_status(model)
-    peak_infected = initial.I
+    peak_infected = initial.I # enregistre le nombre d'infectés initials 
     peak_tick = 0
     final = initial
 
-    for tick in 0:n_ticks
+    for tick in 0:n_ticks # on finit au 50 ticks 
         # Collect population statistics
         counts = count_health_status(model)
 
