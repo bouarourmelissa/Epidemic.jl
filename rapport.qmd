@@ -1,0 +1,52 @@
+---
+lang: fr
+engine: julia
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    include-before-body:
+      - text: |
+          \begin{titlepage}
+          \centering
+          \IfFileExists{logo-uga.png}{\includegraphics[width=0.4\textwidth]{logo-uga.png}\par}{}
+          \vspace{2cm}
+          {\large Rapport du projet \par}
+          \vspace{1cm}
+            {\large Thème :\par}
+          {\Huge\bfseries Simulation d'une épidémie SEIRS avec Julia\par}
+          \vspace{0.5cm} 
+          \vfill
+          {\large\bfseries Membres du groupe : \par}
+          \vspace{0.4cm}
+          {\large Ramez Dahouathi \par Mastene Ouchebbouk\par Melissa Bouarour \par}
+          \vfill
+          {\large Année universitaire 2026/2027 \par}
+          \end{titlepage}
+execute:
+  warning: false
+---
+{{< pagebreak >}} 
+
+# Introduction
+
+Ce rapport présente Epidemic.jl, un package Julia qui simule la propagation d’une épidémie à l’aide d’un modèle 
+à base d’agents (ABM), construit avec la bibliothèque Agents.jl.Chaque personne est un agent qui se déplace sur 
+une grille et peut infecter ses voisins. On observe ensuite ce qui se passe à l’échelle de la population.
+
+## Objectif du projet
+
+L’objectif de ce projet est de modéliser la propagation d’une maladie infectieuse au sein d’une population afin
+ d’étudier comment des règles simples à l’échelle individuelle (déplacement, contact, transmission, guérison) 
+ produisent une dynamique collective, comme le pic épidémique ou la proportion finale d’individus touchés. 
+ Conformément à la consigne, ce travail consiste à implémenter, avec Agents.jl, un package Julia complet et reproductible,
+ puis à analyser l’effet de ses principaux paramètres sur l’évolution de l’épidémie.
+
+## Le modèle SEIRS
+
+Le modèle SEIRS répartit la population en quatre compartiments :
+
+- **S** (*Susceptible*) : individu sain, pouvant être infecté ;
+- **E** (*Exposed*) : individu infecté mais pas encore contagieux (période d'incubation) ;
+- **I** (*Infectious*) : individu infecté et contagieux ;
+- **R** (*Recovered*) : individu guéri, temporairement immunisé.
