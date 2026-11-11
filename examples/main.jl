@@ -1,9 +1,4 @@
-# ====================================================
-# main.jl
-# Point d'entrée : charge les paquets et les deux
-# fichiers, puis lance le serveur.
-# Lancement :  julia main.jl
-# ====================================================
+
 
 using Epidemic, Agents, WGLMakie
 import Bonito
