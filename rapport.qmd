@@ -1,32 +1,34 @@
 ---
+pagetitle: "Simulation d'une épidémie SEIRS avec Julia"
 lang: fr
 engine: julia
 format:
-  pdf:
+  html:
     toc: true
+    toc-title: "Sommaire"
     number-sections: true
-    include-before-body:
-      - text: |
-          \begin{titlepage}
-          \centering
-          \IfFileExists{logo-uga.png}{\includegraphics[width=0.4\textwidth]{logo-uga.png}\par}{}
-          \vspace{2cm}
-          {\large Rapport du projet \par}
-          \vspace{1cm}
-            {\large Thème :\par}
-          {\Huge\bfseries Simulation d'une épidémie SEIRS avec Julia\par}
-          \vspace{0.5cm} 
-          \vfill
-          {\large\bfseries Membres du groupe : \par}
-          \vspace{0.4cm}
-          {\large Ramez Dahouathi \par Mastene Ouchebbouk\par Melissa Bouarour \par}
-          \vfill
-          {\large Année universitaire 2026/2027 \par}
-          \end{titlepage}
+    embed-resources: true
 execute:
   warning: false
 ---
-{{< pagebreak >}} 
+
+```{=html}
+<div style="text-align:center; padding:3rem 0 4rem 0;">
+  <img src="logo-uga.png" alt="Logo UGA" style="max-width:260px;" onerror="this.style.display='none'">
+  <p style="margin-top:3rem; font-size:1.2rem;">Rapport du projet</p>
+  <p style="font-size:1.2rem;">Thème :</p>
+  <h1 style="font-size:2.4rem; margin:0.5rem 0; border:none;">Simulation d'une épidémie SEIRS avec Julia</h1>
+  <p style="margin-top:4rem; font-size:1.2rem;"><strong>Membres du groupe :</strong></p>
+  <p style="font-size:1.2rem; line-height:1.8;">Ramez Dahouathi<br>Mastene Ouchebbouk<br>Melissa Bouarour</p>
+  <p style="margin-top:4rem;">Année universitaire 2026/2027</p>
+</div>
+```
+
+# Introduction
+
+{{< pagebreak >}}
+
+
 
 # Introduction
 
