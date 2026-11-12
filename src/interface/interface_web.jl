@@ -1,5 +1,5 @@
 #  Constuire l'interface Epedimic Lab  : 
-
+import Bonito
 const DOM = Bonito.DOM
 const EMOJIS = ["🙂", "😷", "🤒", "💪"]
 const COL = ["#38bdf8", "#fb923c", "#f43f5e", "#4ade80"]
@@ -38,6 +38,8 @@ barre(pct, couleur; style="") = DOM.div(
 
 # ---------- Application ----------
 function creer_app()
+    WGLMakie.activate!()
+    set_theme!(theme_dark())
     return Bonito.App() do
         # Curseurs
         s_agents, l_agents = curseur("Population", 10:300, 150)
