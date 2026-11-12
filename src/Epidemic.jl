@@ -2,6 +2,9 @@ module Epidemic
 
 using Agents
 using Random
+using WGLMakie
+
+import bonito
 
 include("model_agent.jl")
 
